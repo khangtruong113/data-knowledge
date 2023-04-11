@@ -1,0 +1,64 @@
+version: 2
+
+sources:
+
+  - name: to_chuc_hanh_chinh
+    database: olap_dbt
+    tables:
+      - name: f_so_ubnd_co_ld_chu_chot_nu
+      - name: d_nhiem_ky
+
+  - name: common
+    database: olap_dbt
+    tables:
+      - name: d_cap_don_vi_hanh_chinh
+      - name: d_tong_so
+      - name: d_don_vi_hanh_chinh
+      - name: d_thong_tin_bieu
+      - name: d_loai_don_vi
+
+  # - name: linh_vuc_01
+  #   database: serving_1_dbt
+  #   tables:
+  #     - name: so_ubnd 
+
+models:
+  - name: ubnd
+    columns:
+      - name: id
+        tests:
+          - not_null
+          - unique
+      - name: param_key
+        tests:
+          - accepted_values:
+              values: ['cap_tinh']
+          # custom generic test comparing the view has created from transformation to relative table in serving_1 database
+          - compare_models:
+              to: source('linh_vuc_01','so_ubnd')
+              field: param_key
+      - name: param_value
+        tests:
+          - not_null
+      - name: group_code
+        tests:
+          - accepted_values:
+              values: ['A026']
+      - name: ma_dv_hc
+        tests:
+          - relationships:
+              to: source('common', 'd_don_vi_hanh_chinh')
+              field: code
+      - name: ten_dv_hc
+        tests:
+          - relationships:
+              to: source('common', 'd_don_vi_hanh_chinh')
+              field: name
+      - name: ky_du_lieu
+        tests:
+          - relationships:
+              to: source('to_chuc_hanh_chinh', 'd_nhiem_ky')
+              field: name
+
+
+              
