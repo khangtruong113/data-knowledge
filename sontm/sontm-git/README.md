@@ -11,7 +11,9 @@
 ```$ git config --list```
 
 + Typing git config <key> to check a specific key’s value:
+  
 ```$ git config user.name```
+  
 ```TaMinhSon810```
 
 ## 2. Basics Commands:
