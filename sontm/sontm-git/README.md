@@ -6,6 +6,7 @@
 ```$ git config --global user.name "your_username"```
 
 ```$ git config --global user.email "your_email@example.com"```
+
 **- List and show Git config settings
 
 ```$ git config --list```
