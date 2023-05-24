@@ -81,7 +81,7 @@
  
 ** List all currently configured remote repositories:**
   
-```$ git remote -v
+```$ git remote -v```
   
 ** git pull:** merges all the changes present in the remote repository to the local working directory
   
