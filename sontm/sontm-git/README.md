@@ -85,7 +85,7 @@
   
 ** git pull:** merges all the changes present in the remote repository to the local working directory
   
-```$ git pull origin <branch>
+```$ git pull origin <branch>```
  
 **- git push:** Send local commits to the master branch of the remote repository.
   
