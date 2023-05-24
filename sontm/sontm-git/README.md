@@ -1,4 +1,8 @@
 # GIT: BASICS
+## 0. Git Workflow:
+
+![Workflow](https://i.redd.it/nm1w0gnf2zh11.png)
+
 ## 1. Configure Git
 
 **- Set your user name and email address: git config**
@@ -43,6 +47,10 @@
  
 **- git push:** Send local commits to the master branch of the remote repository.
   
-```$ git push <remote> <branch>```
+```$ git push origin <branch>```
+  
+**- git branch:** List all of the branches in your repo
+
+```
 
 
