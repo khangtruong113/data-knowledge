@@ -1,9 +1,22 @@
 # GIT: BASICS
-## 0. Git Workflow:
 
-![Workflow](http://jaympatel.com/2018/11/get-started-with-git-and-github-in-under-10-minutes/git_images/Git_life_cycle.jpg)
+## 0. Install
 
-## 1. Configure Git
+**- Download Git** https://git-scm.com/downloads
+
+**- Check version of git**
+
+```git --version```
+
+## 1. Git Workflow:
+
+![Workflow](https://i.redd.it/nm1w0gnf2zh11.png)
+
+## 2. File Stages
+
+![File Stages](https://i.stack.imgur.com/slaGB.png)
+
+## 3. Configure Git
 
 **- Set your user name and email address: git config**
 
@@ -21,7 +34,9 @@
   
 ```TaMinhSon810```
 
-## 2. Basics Commands:
+## 4. Commands:
+
+### 4.1. Basic
 
 **- git init:** Create empty Git repo in specified directory. Run with no arguments to initialize the current directory as a git repository.
 
@@ -53,7 +68,7 @@
   
 ```$ git diff```
   
-### Working with branches
+### 4.2. Working with branches
   
 **- gỉt branch:** List all of the branches in your repo**
 
@@ -73,19 +88,23 @@
 
 ```$ git branch -d <branchname>```
   
- ### Remote Repositories
+ ### 4.3. Remote Repositories
   
 **- Connect the local repository to a remote server:**
   
 ```$ git remote add origin <host-or-remoteURL>```
  
-** List all currently configured remote repositories:**
+**- List all currently configured remote repositories:**
   
 ```$ git remote -v```
   
-** git pull:** merges all the changes present in the remote repository to the local working directory
+**- git pull:** merges all the changes present in the remote repository to the local working directory
   
 ```$ git pull origin <branch>```
+
+**- git fetch:** allows users to fetch all objects from the remote repository that don’t currently reside in the local working directory.
+
+```$ git fetch origin <branch>```
  
 **- git push:** Send local commits to the master branch of the remote repository.
   
@@ -94,9 +113,19 @@
 **- git merge:** Merge a different branch into your active branch
   
 ```$ git merge <branch>```
+
+### 4.4. Other Commands
+
+**- git revert:** Create new commit that undoes all of the changes made in <commit>, then apply it to the current branch
+
+```$ git revert <commit>```
+
+**- git reset:**
+
+```git reset [--optional flag] <commit-hash> ```
+
   
 
-##gỉt
 
 
   
