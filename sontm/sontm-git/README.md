@@ -1,7 +1,7 @@
 # GIT: BASICS
 ## 0. Git Workflow:
 
-![Workflow](https://i.redd.it/nm1w0gnf2zh11.png)
+![Workflow](http://jaympatel.com/2018/11/get-started-with-git-and-github-in-under-10-minutes/git_images/Git_life_cycle.jpg)
 
 ## 1. Configure Git
 
@@ -95,6 +95,8 @@
   
 ```$ git merge <branch>```
   
+
+##gỉt
 
 
   
