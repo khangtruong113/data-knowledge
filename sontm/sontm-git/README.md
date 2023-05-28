@@ -12,9 +12,20 @@
 
 ![Workflow](https://i.redd.it/nm1w0gnf2zh11.png)
 
+![Workflow](https://www.toolsqa.com/gallery/Git/4%20Git%20Life%20Cycle.png)
+
 ## 2. File Stages
 
 ![File Stages](https://i.stack.imgur.com/slaGB.png)
+
+
+**Three Git stages:**
+
+**- Modified:** The file has been changed but not committed to the database.
+
+**- Staged:** The file has been marked for inclusion in the next commit.
+
+**- Committed:** The file has been committed to the database.
 
 ## 3. Configure Git
 
@@ -116,7 +127,7 @@
 
 ### 4.4. Other Commands
 
-**- git revert:** Create new commit that undoes all of the changes made in <commit>, then apply it to the current branch
+**- git revert:** Create new commit that undoes all of the changes made in **commit**, then apply it to the current branch
 
 ```$ git revert <commit>```
 
@@ -124,11 +135,22 @@
 
 ```git reset [--optional flag] <commit-hash> ```
 
+***optional flag***:
+
+**+ git reset --mixed:** The default option for git reset. Updates the current branch tip to the specified commit and unstages any changes by moving them from the staging area back to the working tree.
+
+**+ git reset --soft:** Known as a soft reset, this updates the current branch tip to the specified commit and makes no other changes.
+
+**+ git reset --hard:** Known as a hard reset, this updates the current branch tip to the specified commit, unstages any changes, and also deletes any changes from the working directory.
+
+
+**- git rebase:** used to apply certain changes from one branch to another. **base** can be a commit ID, branch name, a tag, or a relative reference to HEAD
+
+```git rebase <base>```
   
 
 
 
   
-
 
 
