@@ -50,7 +50,33 @@
 
 ## 1.5. DQL: Data Query Language
 
-**- ```SELECT```:** trích xuất dữ liệu
+**- ```SELECT```:** trích xuất dữ liệu 
 
 ## 2. Basic Commands
 
+| Command  | Description                       |Example     |
+| -------- | --------------------------------- |------------|
+| `SELECT` | Trích xuất dữ liệu trong database |`SELECT` column1, column2, ...  <br> `FROM` table_name;|
+| `SELECT DISTINCT`          |  Trích xuất dữ liệu riêng riêng biệt (khác nhau)                                |`SELECT DISTINCT` column1, column2, ... <br>`FROM` table_name;|
+| `WHERE`         |   Lọc records theo các điều kiện                                |`SELECT` column1, column2, ... <br>`FROM` table_name <br>`WHERE` condition;|
+| `AND`, `OR`, `NOT`       |  `AND` và `OR` dùng lọc records hơn 1 điều kiện.  `NOT` dùng lọc records khi điều kiện không đúng|`SELECT` column1, column2, ... <br>`FROM` table_name <br>`WHERE` `NOT` (condition1 AND condition2) `OR `condition3 ...;|                                 |
+| `ORDER BY`     | Sắp xếp kết quả theo thứ tự tăng dần hoặc giảm dần trên một hoặc nhiều cột khác nhau                                  |`SELECT` column1, column2, ... <br>`FROM` table_name <br>`ORDER BY` column1, column2, ... ASC|DESC;
+| `LIKE`         |  So sánh một giá trị với các giá trị tương tự bằng cách sử dụng các toán tử đại diện (wildcard)                              |`SELECT` column1, column2, ... <br>`FROM` table_name <br>`WHERE` columnN `LIKE` pattern;|
+|  `IN`        |  chỉ định nhiều giá trị trong mệnh đề WHERE                                 |`SELECT` column_name(s) <br>`FROM` table_name <br>`WHERE` column_name `IN` (value1, value2, ...);|
+| `BETWEEN`         | Dùng cùng `WHERE` để chọn các giá trị trong một khoảng nhất định                                  | `SELECT` column_name(s) <br>`FROM` table_name <br>`WHERE` column_name `BETWEEN` value1 `AND` value2; |
+| `AS`         |  Gán một tên mới tạm thời cho một cột bảng hoặc thậm chí một bảng                                 | `SELECT` column_name `AS` alias_name <br>`FROM` table_name; |
+| `JOIN`         |  kết hợp các data từ hai hoặc nhiều bảng với nhau để thành kết quả mong muốn: `INNER JOIN`, `LEFT JOIN`, `RIGHT JOIN`, `FULL JOIN`                                |`SELECT` Orders.OrderID, Customers.CustomerName, Orders.OrderDate  <br>`FROM` Orders   <br>`INNER JOIN` Customers `ON` Orders.CustomerID=Customers.CustomerID;  |
+| `UNION`         |  Kết hợp tập hợp kết quả của hai hoặc nhiều câu lệnh SELECT. Hai câu lệnh phải cùng số lượng cột. Các cột phải có cùng kiểu dữ liệu, các cột trong mỗi câu lệnh SELECT phải có cùng trật tự. `UNION ALL` tương tự nhưng loại bỏ dòng trùng                                | `SELECT` column_name(s) `FROM` table1 <br>`UNION` <br>`SELECT` column_name(s) `FROM` table2; |
+| `GROUP BY`         | Sắp xếp dữ liệu giống nhau thành các nhóm. Thường dùng với các hàm tính toán `COUNT()`, `MAX()`, `MIN()`, `SUM()`, `AVG()` để nhóm các kết quả giá trị với nhau                                | `SELECT` column_name(s)<br>`FROM` table_name <br>`WHERE` condition <br>`GROUP BY` column_name(s) <br>`ORDER BY` column_name(s); |
+|  `HAVING`         | chỉ định điều kiện lọc mà kết quả nhóm xuất hiện trong kết quả. Dùng với đặt các điều kiện vào các nhóm được tạo bởi mệnh đề `GROUP BY`                                | `SELECT` column_name(s) <br>`FROM` table_name <br>`WHERE` condition <br>`GROUP BY` column_name(s) <br>`HAVING` condition <br>`ORDER BY` column_name(s); |
+
+
+## 3. Data Types
+
+![Data Types](https://www.simplilearn.com/ice9/free_resources_article_thumb/Categories_of_data_types-SQL_Data_Types.PNG)
+
+### 3.1 Numeric
+
+|Data type   |  Description |Storage
+|---|---|
+|   |   |
