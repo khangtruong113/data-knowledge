@@ -77,6 +77,154 @@
 
 ### 3.1 Numeric
 
-|Data type   |  Description |Storage
+|Data type   |  Description |Storage|
+|---|---|---|
+| `bit`  |  	Integer that can be 0, 1, or NULL | |
+| `tinyint ` | Allows whole numbers from 0 to 255       |  1 byte       |
+| `smallint`       | Allows whole numbers between -32,768 and 32,767       |  2 bytes       |
+| `int`   |  Allows whole numbers between -2,147,483,648 and 2,147,483,647      |  4 bytes       |
+|   `bigint`    | Allows whole numbers between -9,223,372,036,854,775,808 and 9,223,372,036,854,775,807       | 8 bytes        |
+| `decimal(p,s)`   | Fixed precision and scale numbers. <br> Allows numbers from -10^38 +1 to 10^38 –1. <br> The p parameter indicates the maximum total number of digits that can be stored (both to the left and to the right of the decimal point). p must be a value from 1 to 38. Default is 18. <br>  The s parameter indicates the maximum number of digits stored to the right of the decimal point. s must be a value from 0 to p. Default value is 0    | 5-17 bytes        |
+| `numeric(p,s)`   |  Fixed precision and scale numbers. <br> Allows numbers from -10^38 +1 to 10^38 –1. <br> The p parameter indicates the maximum total number of digits that can be stored (both to the left and to the right of the decimal point). p must be a value from 1 to 38. Default is 18. <br> The s parameter indicates the maximum number of digits stored to the right of the decimal point. s must be a value from 0 to p. Default value is 0      |  5-17 bytes       |
+| `smallmoney`   |  	Monetary data from -214,748.3648 to 214,748.3647      | 4 bytes        |
+|  `money`  | Monetary data from -922,337,203,685,477.5808 to 922,337,203,685,477.5807       |  8 bytes       |
+| `float(n)`   | Floating precision number data from -1.79E + 308 to 1.79E + 308.<br> The n parameter indicates whether the field should hold 4 or 8 bytes. float(24) holds a 4-byte field and float(53) holds an 8-byte field. Default value of n is 53.       |  4 or 8 bytes       |
+| `real`   | Floating precision number data from -3.40E + 38 to 3.40E + 38       |  4 bytes       |
+
+###  3.2. Character and String Data Types
+
+| Data Type  | Description  | Max Size |  Storage|
+|---|---|---|---|
+| `char(n)`  | Fixed width character string  |  8,000 characters | Defined width   |
+|`varchar(n)`   | Variable width character string	  | 8,000 characters  | 2 bytes + number of chars  |
+| `varchar(max)`  | Variable width character string  | 1,073,741,824 characters  | 2 bytes + number of chars  |
+| `text`  | 	Variable width character string  | 2GB of text data  | 4 bytes + number of chars  |
+
+### 3.3. Unicode Character and String Data Types
+
+| Data Type  | Description  | Max Size |  Storage|
+|---|---|---|---|
+| `nchar`  | Fixed width Unicode string  | 	4,000 characters  | 	Defined width x 2  |
+|`nvarchar`  | Variable width Unicode string  | 4,000 characters  |   |
+| `nvarchar(max)`  | Variable width Unicode string  | 536,870,912 characters  |   |
+| `ntext`  | Variable width Unicode string  | 2GB of text data  |   |
+
+### 3.4. Binary Data Types
+
+| Data Type  | Description  | Max Size |  Storage|
+|---|---|---|---|
+| `binary(n)`  | Fixed width binary string  | 8,000 bytes  |   |
+| `varbinary`  | Variable width binary string  | 8,000 bytes  |   |
+|  `varbinary(max)` | Variable width binary string  | 	2GB  |   |
+|  `image` | Variable width binary string  | 	2GB  |   |
+
+### 3.5. Date and Time Data Types
+
+| Data Type  |  Description | Storage   |
+|---|---|---|
+| `datetime` | From January 1, 1753 to December 31, 9999 with an accuracy of 3.33 milliseconds  | 8 bytes  |
+| `datetime2`  | From January 1, 0001 to December 31, 9999 with an accuracy of 100 nanoseconds  | 	6-8 bytes  |
+| `smalldatetime`  | From January 1, 1900 to June 6, 2079 with an accuracy of 1 minute  | 4 bytes  |
+| `date`  | Store a date only. From January 1, 0001 to December 31, 9999  | 3 bytes  |
+| `time`  | Store a time only to an accuracy of 100 nanoseconds  | 	3-5 bytes  |
+|  `datetimeoffset` | The same as datetime2 with the addition of a time zone offset  | 8-10 bytes  |
+| `timestamp`  |  Stores a unique number that gets updated every time a row gets created or modified. The timestamp value is based upon an internal clock and does not correspond to real time. <br> Each table may have only one timestamp variable |   |
+
+### 3.6. Other Data Types
+
+| Data Type  |  Description |
 |---|---|
-|   |   |
+| `sql_variant`  | Stores up to 8,000 bytes of data of various data types, except text, ntext, and timestamp  |
+| `uniqueidentifier`   | Stores a globally unique identifier (GUID)   |
+| `xml`   | Stores XML formatted data. Maximum 2GB   |
+| `cursor`   | 	Stores a reference to a cursor used for database operations   |
+| `table`   | Stores a result-set for later processing   |
+
+## 4. Window Functions
+
+`Window Functions` thực hiện các phép tính toán các dòng trong bảng mà có liên quan đến dòng hiện tại. 
+
+`Window Functions` cũng tính toán như `Aggregate Functions` tuy nhiên điểm khác biệt chính là khi dùng `Window Function` các row sẽ không bị gộp lại thành một như khi dùng `Aggregate Function`
+
+![Window Functions](data:image/png;base64,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)
+
+## 4.1. Syntax:
+
+>SELECT <column_1>, <column_2>,<br> 
+<**window_functions**>(espression) **OVER** (**PARTITION BY**<partition_list> **ORDER BY** <order_list> <frame_clause>)<br>
+FROM <table_name>
+
+Trong đó:
+- `window_function`: Tên window functions mà ta muốn sử dụng (sum, avg, row_number)
+- `expression`: tên column mà ta muốn tính toán. Expression có thể không bắt buộc có tuỳ theo window functions
+- `OVER`: dấu hiệu đây là window functions
+- `PARTITION BY`: chia nhóm các hàng thành các partitions để có thể tính toán window function
+- `partition_list`: Tên một hoặc nhiều cột ta muốn PARTITION BY
+- `ORDER BY`: Sắp xếp các hàng trong từng parttion
+- `order_list`: Tên một hoặc nhiều cột ta muốn ORDER BY
+- `frame_clause`: giới hạn phân vùng bằng cách đặt điểm đầu và điểm cuối các hàng muốn chọn.
+
+***FRAME_CLAUSE***:
+
+Trong `frame_clause` cú pháp chung là:
+> frame_unit {<frame_start>|<frame_between>}
+
+Trong đó:
+- `PRECEDING`: xác định điểm đầu của partition
+  - `UNBOUNDED PRECEDING`: dòng đầu tiên của partition
+  - `<value> PRECEDING` (ex: ```2 PRECEDING```): 2 dòng trước tính từ dòng hiện tại
+- `CURRENT ROW`: dòng hiện tại
+- `FOLLOWING`: xác định điểm cuối của partition
+  - `UNBOUNDED FOLLOWING`: dòng cuối cùng của partition
+  - `<value> FOLLOWING` (ex: ```2 FOLLOWING```): 2 dòng tiếp sau tính từ dòng hiện tại
+- `BETWEEN...AND`: thể hiện khoảng bắt đầu và kết thúc partition để tính toán.
+
+![Window Functions](https://media.techmaster.vn/api/static/c77cd27k0cmou6gu4m20/X4rBuzRw)
+
+Trong cú pháp frame_unit có 2 giá trị để lựa chọn ROWS hoặc RANGE:
+- `ROWS` tạo ra frame dựa trên số lượng với hàng hiện tại : n preceding, m following. Khi sử dụng ROWS, duplicate được coi như unique value -> Tính toán window functions theo từng hàng theo chỉ định.
+ <br>`ROWS` có thể sử dụng các frame delimiters sau:
+  + UNBOUNDED PRECEDING
+  + UNBOUNDED FOLLOWING
+  + CURRENT ROW
+  + N PRECEDING
+  + N FOLLOWING
+
+- `RANGE` thì dựa trên tính chất của hàng: unbounded preceding, unbounded following. Khi sử dụng RANGE, đối các giá trị duplicate hàm sẽ được tính toán trước và trả giá trị giống nhau cho các hàng duplicate.
+Nếu không khai báo giá trị mặc định cho mệnh đề này là: `range between unbounded preceding and current row`
+<br> `RANGE` có thể sử dụng các frame delimiters sau:
+  + UNBOUNDED PRECEDING
+  + UNBOUNDED FOLLOWING
+  + CURRENT ROW
+
+## 4.2. Phân loại Window Functions
+
+### 4.2.1. Aggregate Functions:
+
+- `SUM()`: Tổng các giá trị
+- `COUNT()`: Đếm các giá trị
+- `AVG()`: Tính trung bình các giá trị
+- `MAX()`: Tìm giá trị lớn nhất
+- `MIN()`: Tìm giá trị nhỏ nhất
+
+### 4.2.2. Ranking Functions
+
+- `ROW_NUMBER()`: Xếp hạng các giá trị trong từng partition lần lượt mà không quan tâm gía trị trùng nhau
+- `RANK()`: giống `row_number()` nhưng `RANK()` khi gặp giá trị duplicate sẽ xếp cùng hạng nhau. Hàm `RANK()` sẽ bỏ qua thứ hạng tiếp theo cho những dòng có cùng hạng trước đó
+- `DENSE_RANK()`: giống `RANK()` nhưng Hàm `DENSE_RANK()` không bỏ qua thứ hạng tiếp theo cho những dòng có cùng hạng trước đó
+- `CUME_DIST()`: Tính tỷ lệ các giá trị nhỏ hơn hoặc bằng giá trị hiện tại
+- `PERCENT_RANK()`: (rank -1)/(row-1)
+<br> Trong đó:
+
+  + rank là thứ tự của giá trị đó theo thứ tự tăng dần (các giá trị giống nhau trả về thứ hạng giống nhau)
+
+  + row: tổng số dòng (xét trong 1 partition)
+
+### 4.2.3. Analytics Functions:
+
+- `FIRST_VALUE (expression)`: Lấy giá trị đầu trong từng partition
+- `LAST_VALUE (expression)`: Lấy giá trị cuối trong từng partition
+- `LAG(expression, offset)`:  trả về giá trị của n hàng trước nó trong bảng kể từ row hiện tại
+<br> Trong đó offset: số hàng lệch so với hàng hiện tại (Nếu tham số này bị bỏ qua, mặc định là 1)
+- `LEAD(expression, offset)`: trả về giá trị của n hàng tiếp theo nó trong bảng kể từ row hiện tại
+<br> Trong đó offset: số hàng lệch so với hàng hiện tại (Nếu tham số này bị bỏ qua, mặc định là 1)
