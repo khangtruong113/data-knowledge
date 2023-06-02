@@ -294,12 +294,298 @@ Tham khảo thêm về:
 - Tạo partition table ở [SQL Server](https://learn.microsoft.com/en-us/sql/t-sql/statements/create-partition-function-transact-sql?view=sql-server-ver16), [MySQL](https://indaacademy.vn/performance-tunning/partition-sql-la-gi/#4_RANGE_PARTITIONING), [PostgreSQL](https://www.postgresql.org/docs/current/ddl-partitioning.html)
 
 ## 7. Server-Side Programming
+### 7.1. Khai báo và sử dụng biến trong SQL
+Có 2 loại biến: local và global 
+- Biến cục bộ (local variable): là biến chỉ sử dụng trong đoạn chương trình khai báo nó như Query 
+Batch, Stored Procedure, Function, chứa giá trị thuộc một kiểu nhất định. Biến cục 
+bộ được bắt đầu bằng ký hiệu @
+- Biến toàn cục (glocal variable): là biến được sử dụng bất kỳ đâu trong hệ thống. Trong SQL biến toàn 
+cục là các biến hệ thống do SQL Server cung cấp. SQL tự cập nhật giá trị cho các biến 
+này, người sử dụng không thể gán giá trị trực tiếp cho biến này Bản chất là 1 hàm 
+(Function) và bắt đầu bằng ký tự @@
 
+Khai báo biến:
+
+    DECLARE @var_name data_type;
+
+    VD: DECLARE @order_year SMALLINT,
+                @product_name VARCHAR(MAX);
+
+Gán giá trị cho biến:
+
+    SET @val_name = value;
+
+    VD: --Gán giá trị 2016 cho biến @order_year
+        SET @order_year = 2016;
+
+        --Gán vào biến @product_count câu lệnh đếm số lượng products
+        SET @product_count = (Select count(product_id) from production.products);
+
+Ví dụ sử dụng biến trong SQL:
+
+    --Cần lấy thông tin của tất cả sản phẩm với năm sản xuất = @model_year
+    DECLARE @model_year SMALLINT;
+    SET @model_year = 2018;
+    SELECT product_name,
+        model_year,
+        list_price 
+    FROM
+      production.products
+    WHERE
+      model_year = @model_year
+    ORDER BY
+      product_name;
+
+### 7.2. Câu lệnh điều kiện IF...ELSE và vòng lặp WHILE
+#### a. IF...ELSE
+If...else là một câu lệnh điều kiện cho phép thực hiện hay bỏ qua một khối các câu lệnh dựa vào một điều kiện cụ thể
+
+Cú pháp:
+
+    IF <boolean_expression>
+    BEGIN
+    <Statement block executes when Boolean expressions is TRUE>
+    END
+    ELSE
+    BEGIN
+    <Statement block executes when Boolean expressions is FALSE>
+    END
+
+Ví dụ: In ra tin nhắn:” Great! The sales amount in 2017 is greater than 10,000,000” nếu tổng 
+doanh thu trong năm 2017 >10000000 nếu không, in ra tin nhắn “Sales amount in 2017 did 
+not reach 10,000,000”:
+
+    BEGIN
+     -- Thực hiện tính toán để so sánh điều kiện vào biến @sales
+     DECLARE @sales INT;
+     SELECT @sales = SUM(list_price * quantity)
+     FROM sales.order_items i
+     INNER JOIN sales.orders o ON o.order_id = i.order_id
+     WHERE YEAR(order_date) = 2017;
+     SELECT @sales;
+     -- So sánh điều kiện
+     IF @sales > 10000000
+     -- Thực hiện câu lệnh khi điều kiện so sánh trên đúng
+     BEGIN
+     PRINT 'Great! The sales amount in 2017 is greater than 10,000,000’;
+     END
+     -- Thực hiện lệnh sau nếu câu điều kiện sai
+     ELSE
+     BEGIN
+     PRINT 'Sales amount in 2017 did not reach 10,000,000';
+     END
+    END
+
+#### b. WHILE
+
+Cú pháp:
+
+    WHILE condition
+    BEGIN
+       <statements>
+    END;
+
+Trong đó:
+- Condition là điều kiện để dừng vòng lặp, nếu điều kiện này TRUE thì vòng lặp sẽ được 
+chạy, còn FALSE thì sẽ dừng.
+- Statement là những dòng lệnh SQL cần chạy trong mỗi lần lặp. 
+Vòng lặp rất nguy hiểm nếu bị lặp vô hạn, nó sẽ dẫn tới hệ thống bị treo vì quá tải tài 
+nguyên nên ban phải chắc chắn là condition phải có 1 lần FALSE.
+
+Trong vòng lặp WHILE bạn có thể sử dụng BREAK để thoát ra khỏi vòng lặp.
+Sử dụng lệnh CONTINUE để bỏ qua các dòng lệnh trong khối WHILE và ở bên dưới nó, để tiếp tục một vòng lặp mới.
+
+Ví dụ: Viết chương trình in dãy từ 1 đến 10:
+
+    DECLARE @volume INT
+    WHILE @volume <= 10
+    BEGIN
+    PRINT @volumn
+    SET @volumn = @volumn + 1
+    END
+
+### 7.3. Stored Procedure
+Một Stored Procedure là bao gồm các câu lệnh Transact-SQL và được lưu lại trong cơ sở dữ
+liệu. Thông thường ta sử dụng store để lưu trữ tập hợp nhiều câu lệnh được sử dụng lại 
+nhiều lần. Khác với view ta có thể truyền các biến vào store. Một cách khác sử dụng store 
+kết hợp với schedule trong sql server để cập nhật dữ liệu vào các bảng thay cho view khi có 
+dữ liệu mới.
+
+Tạo Stored Procedure
+
+    CREATE PROCEDURE StoredProcedureName AS
+
+Chỉnh sửa Stored Procedure
+
+    ALTER PROCEDURE MyStoredProcedure AS 
+
+Thực thi Stored Procedure
+
+    EXEC MyStoredProcedure;
+
+Cú pháp:
+
+    CREATE PROCEDURE <Tên thủ tục>
+    Danh sách tham số vào 
+    [Danh sách tham số ra <output>] 
+    AS
+    BEGIN
+    <Đoạn chương trình xử lý>
+    [RETURN [giá trị trả về] ] 
+    END;
+    GO;
+
+Ví dụ: Viết store cho phép nhập tên một nhân viên sẽ ra được doanh thu và số lượng bán 
+của nhân viên qua các tháng:
+
+    CREATE PROCEDURE revenue_by_staff
+    @staff_name varchar(max)
+    AS
+    BEGIN
+    Select ss.first_name, ss.staff_id,format(order_date, 'yyyy/MM'), sum(quantity)
+    as total_quantity, sum(quantity*list_price*(1-discount)) as revenue
+    From sales.staffs ss
+    Left join sales.orders so on ss.staff_id = so.staff_id
+    left join sales.order_items soi on soi.order_id = so.order_id
+    where ss.first_name = @staff_name
+    Group by ss.first_name, ss.staff_id, format(order_date, 'yyyy/MM')
+    order by ss.staff_id 
+    END;
+    EXEC revenue_by_staff 'Genna';
+
+Trong trường hợp sử dụng store để update dữ liệu vào bảng khi cần tạo bảng thay cho view.
+Những điều cần lưu ý khi sử dụng store để update dữ liệu
+- Cần đánh dấu những dữ liệu mới được cập nhật. Thông thường có 2 cách:
+  - Thêm một cột đánh dấu có giá trị là (0,1) với 1 là những record đã được xử lý 
+  và lưu vào bảng mới, và 0 với những dữ liệu mới cần xử lý 
+  - Tạo một bảng lưu lần cuối chạy store và mình sẽ lọc những record có 
+  last_updated > thời gian lần cuối chạy store và tiến hành xử lý
+- Cần cài đặt shedule để chạy store update dữ liệu.
+
+### 7.4. Function
+Nếu nói đến gom nhóm và sử dụng nhiều lần thì stored procedure cũng làm được, tuy nhiên 
+procedure sẽ không có giá trị trả về, còn function thì sẽ có giá trị trả về. SQL Server cũng có 
+rất nhiều hàm có sẵn như hàm nối chuỗi (concat), hàm tính giá trị căn bậc hai (sqrt).
+
+Các hàm sẽ giúp đơn giản hóa chương trình và có thể sử dụng nhiều lần. Ví dụ bạn cần viết 
+một loạt các câu lệnh SQL phức tạp lên đến hàng ngàn dòng thì có thể phân tích và chia nhỏ
+thành nhiều hàm
+
+Cú pháp:
+
+    CREATE FUNCTION function_name (parameter_list)
+    RETURN data_type 
+    AS
+    BEGIN
+    <statements>
+    RETURN value
+    END;
+
+Trong đó:<br>
+- function_name : tên function<br>
+- parameter_list : tham số truyền vào<br>
+- RETURN data_type : Kiểu dữ liệu trả về<br>
+- Statements : Danh sách các lệnh SQL<br>
+- RETURN value : Giá trị được trả về<br>
+
+Ví dụ 1: function tính tổng 2 số
+
+    CREATE FUNCTION tinh_tong (@a INT, @b INT) 
+    RETURNS INT
+    AS 
+    BEGIN
+    RETURN @a + @b;
+    END;
+
+Ví dụ 2: Tạo function tính doanh thu của từng nhân viên
+
+    CREATE FUNCTION f_revenue_staff (@staff_name varchar(max))
+    RETURNS numeric
+    AS
+    BEGIN
+    Declare @revenue numeric
+    Set @revenue = (
+    Select sum(quantity*list_price*(1-discount))
+    From sales.staffs ss
+    Left join sales.orders so on ss.staff_id = so.staff_id
+    left join sales.order_items soi on soi.order_id = so.order_id
+    where ss.first_name = @staff_name)
+    Return @revenue
+    END;
+    Select first_name, dbo.f_revenue_staff(first_name)
+    From sales.staffs 
+    Group by first_name;
 
 ## 8. Triggers and Rules
 
+Mỗi table thường sẽ có 3 thao tác làm thay đổi dữ liệu đó là: UPDATE, INSERT, DELETE. Và 
+đôi khi mỗi hành động như vậy ta sẽ có những ràng buộc trên bảng để giúp bảo toàn dữ liệu, 
+lúc này sử dụng trigger là một giải pháp tốt.
+
+Có 3 loại trigger chính:
+- Update: Loại trigger sẽ được kích hoạt khi có hành động cập nhật dữ liệu. 
+- Insert: Loại trigger sẽ được kích hoạt khi có hành động thêm dữ liệu. 
+- Delete: Loại trigger sẽ được kích hoạt khi có hành động xóa dữ liệu.
+
+Cú pháp:
+    
+    CREATE TRIGGER tên_trigger ON <tên_bảng> 
+    FOR {DELETE, INSERT, UPDATE} 
+    AS câu_lệnh_sql
+
+Ví dụ: Tạo trigger để với mỗi cập nhật insert hay delete bảng product thì hành động đó sẽ được 
+lưu lại trong bảng product audit:
+
+    CREATE TRIGGER production.trg_product_audit
+    ON production.products
+    AFTER INSERT, DELETE
+    AS
+    BEGIN
+     SET NOCOUNT ON;
+     INSERT INTO production.product_audits(product_id, product_name, brand_id, 
+     category_id, model_year, list_price, updated_at, operation)
+     SELECT i.product_id, product_name, brand_id, category_id, model_year, 
+    i.list_price, GETDATE(), 'INS'
+     FROM inserted i
+     UNION ALL
+     SELECT d.product_id,product_name,brand_id,category_id,model_year,d.list_price, 
+    GETDATE(), 'DEL'
+     FROM deleted d;
+    END
 
 ## 9. Connectors and APIs
-
-
-## 10. Assignment
+    CREATE DATABASE test;
+    go
+    
+    sp_configure 'show advanced options', 1;
+    GO
+    RECONFIGURE;
+    GO
+    sp_configure 'Ole Automation Procedures', 1;
+    GO
+    RECONFIGURE;
+    GO
+    ALTER DATABASE test SET COMPATIBILITY_LEVEL = 130;
+    
+    DECLARE @Object AS INT;
+    DECLARE @hr INT;
+    DECLARE @json AS TABLE(Json_Table NVARCHAR(MAX));
+    DECLARE @jtext NVARCHAR(MAX);
+    EXEC @hr=sp_OACreate 'MSXML2.ServerXMLHTTP.6.0', @Object OUT;
+    IF @hr<>0 EXEC sp_OAGetErrorInfo @Object;
+    EXEC @hr=sp_OAMethod @Object, 'open', NULL, 'get', 'https://jsonplaceholder.typicode.com/users', 'false'; -- nhập đường dẫn lấy API Tại đây
+    IF @hr<>0 EXEC sp_OAGetErrorInfo @Object;
+    EXEC @hr=sp_OAMethod @Object, 'send';
+    IF @hr<>0 EXEC sp_OAGetErrorInfo @Object;
+    EXEC @hr=sp_OAMethod @Object, 'responseText', @json OUTPUT;
+    --IF @hr<>0 EXEC sp_OAGetErrorInfo @Object;
+    INSERT INTO @json(Json_Table)EXEC sp_OAGetProperty @Object, 'responseText';
+    SELECT @jtext=Json_Table FROM @json;
+    SELECT *
+    FROM
+        OPENJSON(@jtext)
+        WITH(id int, name NVARCHAR(50), username NVARCHAR(30), email NVARCHAR(50),
+            zipcode NVARCHAR(20) '$.address.zipcode', 
+            phone VARCHAR(30), website NVARCHAR(50), 
+            company NVARCHAR(MAX) '$.company.name') b;
+    EXEC sp_OADestroy @Object;
