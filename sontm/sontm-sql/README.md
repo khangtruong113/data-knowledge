@@ -228,3 +228,215 @@ Nếu không khai báo giá trị mặc định cho mệnh đề này là: `rang
 <br> Trong đó offset: số hàng lệch so với hàng hiện tại (Nếu tham số này bị bỏ qua, mặc định là 1)
 - `LEAD(expression, offset)`: trả về giá trị của n hàng tiếp theo nó trong bảng kể từ row hiện tại
 <br> Trong đó offset: số hàng lệch so với hàng hiện tại (Nếu tham số này bị bỏ qua, mặc định là 1)
+
+# 5. Server-Side Programming
+
+## 5.1. Biến
+`Variable (biến)` là một đối tượng trong CSDL dùng để lưu dữ liệu tạm thời.
+
+- `Biến toàn cục:` Nó có sẵn và hệ thống quản lý và trong SQL server được đặt tên bắt đầu bởi 2 ký hiệu @.
+Ví dụ: `@@VERSION` - Thông tin phiên bản Microsoft SQL Server;<br>`@@ERROR` - Mã lỗi của câu lệnh thực thi gần nhất;<br>`@@ROWCOUNT` - Số dòng bị tác động bởi câu lệnh gần nhất;...
+
+- `Biến cục bộ:` Nó dùng để lưu trữ do người dùng tạo ra và để lưu trữ những giá trị tạm thời. Ở đây chúng ta chủ yếu quan tâm đến biến cục bộ.
+
+**Khai báo biến**:
+
+`DECLARE @var_name data_type;`
+
+**Gán giá trị cho biến:**
+
+`SET @var_name = value;`
+
+**Khai báo biến với giá trị mặc định**
+`DECLARE @var_name data_type = value;`
+
+
+## 5.2. Function:
+`Function` Là một đối tượng trong cơ sở dữ liệu (CSDL) sử dụng trong các câu lệnh SQL, được biên dịch sẵn và lưu trong CSDL nhằm mục đích thực hiện xử lý nào đó như tính toán phức tạp và trả về kết quả là giá trị nào đó.
+- Hàm đơn trị (Scalar Function)
+- Hàm đọc bảng (Inline Table-Valued Function).
+- Hàm tạo bảng (Multi-Statement Table-Valued Function).
+
+**Hàm đơn trị (Scalar Function)**
+```
+CREATE FUNCTION func_name(param_list)
+RETURNS data_type
+AS
+BEGIN
+    <statement>
+    RETURN value
+END
+GO
+```
+
+**Hàm đọc bảng (Inline Table-Valued Function)**
+```
+CREATE FUNCTION func_name(param_list)
+RETURNS TABLE
+AS
+RETURN
+(
+    Query
+)
+GO
+```
+
+**Hàm tạo bảng (Multi-Statement Table-Valued Function)**
+```
+CREATE FUNCTION func_name(param_list)
+RETURNS Tên_biến TABLE(table_type_definition)
+AS
+BEGIN
+    INSERT | UPDATE | DELETE
+    RETURN
+END
+GO
+```
+
+***Thay đổi function***: Cú pháp tương tự như tạo mới Function, chỉ thay từ khóa `CREATE` bằng từ khóa `ALTER`
+
+***Xóa Function***: `DROP FUNCTION`
+`DROP FUNCTION [schema_name.] <func_name>`
+
+***Xem nội dung Function***: Để xem nội dung function ta sử dụng Store Procedure (Thủ tục) có sẵn của SQL là `sp_helptext` (Transact-SQL)
+
+`EXEC sp_helptext 'func_name'`
+
+## 5.3. Store Procedure
+
+`Stored procedure` là tập hợp một hoặc nhiều câu lệnh T-SQL thành một nhóm đơn vị xử lý logic và được lưu trữ trên Database Server. Khi một câu lệnh gọi chạy stored procedure lần đầu tiên thì SQL Server sẽ chạy nó và lưu trữ vào bộ nhớ đệm, gọi là plan cache, những lần tiếp theo SQL Server sẽ sử dụng lại plan cache nên sẽ cho tốc độ xử lý tối ưu.
+
+```
+CREATE [OR ALTER] {PROC | PROCEDURE} [schema_name.] procedure_name([@parameter data_type [ OUT | OUTPUT | [READONLY]] 
+[ WITH <procedure_option> ]
+[ FOR REPLICATION ]
+    AS
+    BEGIN
+        sql_statements 
+    END
+```
+
+***Thay đổi Store Procedure***: Cú pháp tương tự như tạo mới Store Procedure, chỉ thay từ khóa `CREATE` bằng từ khóa `ALTER`
+
+***Xoá Store Procedure***: `DROP PROCEDURE`
+
+`DROP PROCEDURE sp_name`
+
+***Thực thi Store Procedure***: `EXEC`
+
+`EXEC sp_name`
+
+## 5.4. Function vs Store Procedure
+
+- Giống: Cả stored procedure và function đều là các đối tượng cơ sở dữ liệu chứa một tập các câu lệnh SQL để hoàn thành một tác vụ.
+- Khác: 
+  - Store Procedure có thể trả về giá trị zero, một hoặc nhiều giá trị. Trong khi Function phải trả về một giá trị duy nhất (có thể là bảng).
+  - Các Function chỉ có thể có các tham số đầu vào cho nó trong khi Store Procedure có thể có các tham số đầu vào hoặc đầu ra.
+  - Function có thể được gọi từ Store Procedure trong khi Store Procedure không thể được gọi từ Function.
+
+## 5.5. View:
+
+Một `view` là không gì khác ngoài môt lệnh SQL mà được lưu giữ trong Database với một tên liên kết. Một `view` thực sự là một thành phần của một bảng trong form của một truy vấn SQL đã được định nghĩa trước.
+
+Một `view` trong SQL có thể chứa tất cả các hàng của một bảng hoặc các hàng đã được chọn từ một bảng. Một `view` có thể được tạo từ một hoặc nhiều bảng, phụ thuộc vào truy vấn SQL đã viết để tạo một view.
+
+`View` rất hữu dụng khi bạn muốn cho nhiều người người truy cập ở các permission khác nhau.
+
+***Cú pháp***
+```
+CREATE VIEW ViewName AS
+SELECT ...
+```
+***Mở view***
+```
+SELECT * FROM ViewName
+```
+
+***Chỉnh sửa view***: Cú pháp tương tự như tạo mới View, chỉ thay từ khóa `CREATE` bằng từ khóa `ALTER`
+
+***Xoá View***: `DROP VIEW`
+
+`DROP VIEW ViewName`
+
+
+## 5.6. IF...ELSE
+
+`IF...ELSE` dùng để thực thi các lệnh có điều kiện, nếu lệnh đúng thì thực thi lệnh đó, nếu sai sẽ thực thi một lệnh khác.
+
+***Cú pháp***:
+
+```
+IF <boolean_expression>
+BEGIN
+<Statement block executes when Boolean expressions is TRUE>
+END
+ELSE
+BEGIN
+<Statement block executes when Boolean expressions is FALSE>
+END
+```
+
+## 5.7. WHILE
+
+Vòng lặp `WHILE (WHILE LOOP)` được sử dụng nếu bạn muốn chạy lặp đi lặp lại một đoạn mã khi điều kiện cho trước trả về giá trị là TRUE.
+
+***Cú pháp:***
+```
+WHILE condition
+BEGIN
+   <statements>
+
+   [BREAK] [CONTINUE]
+END;
+```
+
+**Lưu ý:** Trong vòng lặp WHILE bạn có thể sử dụng BREAK để thoát ra khỏi vòng lặp. Sử dụng lệnh CONTINUE để bỏ qua các dòng lệnh trong khối WHILE và ở bên dưới nó, để tiếp tục một vòng lặp mới.
+
+# 6. Triggers and Rules
+
+`Trigger` trong SQL là stored procedure đặc biệt (không có tham số) được thực thi (execute) một cách tự động khi có một sự kiện thay đổi dữ liệu (data modification) như Insert, Delete, hay Update.
+
+**Phân loại:**
+
+- `DDL (Data Definition Language) trigger:` Loại trigger này kích hoạt khi các sự kiện thay đổi cấu trúc (như tạo, sửa đổi hay loại bỏ bảng). Hoặc trong các sự kiện liên quan đến server như thay đổi bảo mật hoặc sự kiện cập nhật thống kê.
+
+- `DML (Data Modification Language) trigger:` Đây là loại trigger được sử dụng nhiều nhất. Trong trường hợp này, sự kiện kích hoạt là một câu lệnh sửa đổi dữ liệu. Nó có thể là một câu lệnh chèn, cập nhật hoặc xoá trên một bản. 
+
+Ở đây ta chú trọng xem `DML (Data Modification Language) trigger`
+
+**Cú pháp:**
+
+```
+CREATE TRIGGER trigger_name  
+ON { table_name }   
+[ WITH <Options> ]  
+{ FOR | AFTER | INSTEAD OF }   
+{ [INSERT], [UPDATE] , [DELETE] }
+```
+- `FOR hoặc AFTER [[INSERT, UPDATE, DELETE]:` Các loại trigger này được thực thi sau khi câu lệnh kích hoạt kết thúc.
+- `INSTEAD OF [INSERT, UPDATE, DELETE]:` Trái ngược với FOR (AFTER), trigger INSTEAD OF thực thi thay vì thay cho câu lệnh kích hoạt. 
+
+***Xoá Triggers***:
+
+```
+DROP TRIGGER trigger_name
+```
+
+***Enable/Disable Triggers***
+```
+ENABLE/DISABLE trigger_name
+{ON table_name | ON DATABASE | ON ALL SERVER}
+```
+
+# 7. Indexing
+`INDEX (hay chỉ mục)` là một cấu trúc dữ liệu để tăng hiệu suất truy vấn của cơ sở dữ liệu. Index cho phép cơ sở dữ liệu thực hiện một số câu truy vấn có điều kiện nhanh hơn so với thông thường. Nhưng index cũng được lưu trên bộ nhớ và tiêu tốn không gian bộ nhớ và thời gian để tạo, cập nhật index nên khi sử dụng index cần phải suy xét kĩ.
+
+`INDEX` giúp tăng tốc các truy vấn SELECT và các mệnh đề WHERE , nhưng nó làm chậm dữ liệu nhập vào, với các câu lệnh UPDATE và INSERT . Các chỉ mục có thể được tạo ra hoặc bỏ đi mà không ảnh hưởng đến dữ liệu.
+
+# 8. Partitioning
+# 9. Connectors and APIs
+
+
+
+
+
