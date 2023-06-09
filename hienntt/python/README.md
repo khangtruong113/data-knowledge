@@ -355,7 +355,7 @@ print(ma.get_sum(4,7))
 
 **Cùng cấp thư mục:**
 
-Tạo 2 file ```main.py``` và ```math_plus.py``` ở cùng cấp thư mục.
+Tạo 2 file ```main.py``` và ```math_plus.py``` ở cùng cấp thư mục ```practices```.
 
 Trong file ```math_plus.py```:
 ```python
@@ -374,6 +374,8 @@ _Chú ý:_
 - Đối với trường hợp các bạn sử dụng from ... import * thì mặc định python nó sẽ không import được các đối tượng có tên được bắt đầu bằng ký tự _ . Trong trường hợp này, nếu như bạn muốn import được các đối tượng đó thì bạn sẽ phải chỉ đích danh các đối tượng đó.
 
 **Import module khác thư mục:**
+
+Tạo thư mục ```modules``` là thư mục con trong thư mục ```practices```.
 
 
 
