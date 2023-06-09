@@ -1,0 +1,56 @@
+
+
+# request for well-formed student
+
+# curl -X 'POST' \
+#   'http://127.0.0.1:8000/students/' \
+#   -H 'accept: application/json' \
+#   -H 'Content-Type: application/json' \
+#   -d '{
+#   "first_name": "Elon",
+#   "last_name": "Musk",
+#   "age": 52,
+#   "date_joined": "2003-01-01",
+#   "level": 3,
+#   "gmail": "elon-tesla@gmail.com"
+# }'
+
+
+# POST /echo/post/json http://127.0.0.1:8000/
+# Content-Type: application/json
+
+# {
+#   "first_name": "Elon", "last_name": "Musk", "age": 52, "date_joined": "2003-01-01", "level": 3, "gmail": "elon-tesla@gmail.com"
+# }
+
+
+
+
+# # request for student's creation fail validaton on type hint and constraints
+curl -X 'POST' \
+  'http://127.0.0.1:8000/students/' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "first_name": "Bug",
+  "last_name": "x",
+  "age": -5,
+  "date_joined": "2010-01-01",
+  "level": "beginner",
+  "gmail": "bug@gmail.com"
+}'
+
+# request for student's creation fail validaton on custom validators
+
+curl -X 'POST' \
+  'http://127.0.0.1:8000/students/' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "first_name": "Issue",
+  "last_name": "Nguyen",
+  "age": 11,
+  "date_joined": "2010-01-01",
+  "level": 3,
+  "gmail": "issue@outlook.com"
+}'

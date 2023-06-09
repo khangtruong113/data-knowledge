@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "fastapi-study"
+version = "0.1.0"
+description = ""
+authors = ["trungnghiahoang96 <hoangtrungnghia@gmail.com>"]
+readme = "README.md"
+packages = [{include = "fastapi_study"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pyperclip = "^1.8.2"
+fastapi = "^0.96.0"
+uvicorn = "^0.22.0"
+jupyterlab = "^4.0.1"
+sqlalchemy = "^2.0.15"
+alembic = "^1.11.1"
+psycopg2-binary = "^2.9.6"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,28 @@
+curl -X 'POST' \
+  'http://127.0.0.1:8000/student/' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "first_name": "Elon",
+  "last_name": "Musk",
+  "age": 52,
+  "date_joined": "2023-06-08",
+  "level": 1,
+  "gmail": "elon-tesla@gmail.com"
+}'
+
+
+
+curl -X 'GET' \
+  'http://127.0.0.1:8000/student/' \
+  -H 'accept: application/json'
+
+
+curl -X 'GET' \
+  'http://127.0.0.1:8000/student/1' \
+  -H 'accept: application/json'
+
+
+curl -X 'DELETE' \
+  'http://127.0.0.1:8000/student/1' \
+  -H 'accept: */*'

@@ -1,0 +1,14 @@
+ 
+
+
+docker compose up 
+
+alembic init alembic
+
+
+alembic revision --autogenerate
+
+alembic upgrade head
+
+
+poetry export --without-hashes --format=requirements.txt > requirements.txt
