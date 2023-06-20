@@ -1,0 +1,4 @@
+abc@example.com
+cdf@email.org
+adhsj@site
+saddg@subdomain.domain.co.uk

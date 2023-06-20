@@ -39,7 +39,8 @@ Nguồn khác: [tra cứu và test regex pattern](https://regex101.com/), [cheat
 | split     | split(pattern, string, optional max number of split, optional flags)                                       | Split string ở mọi chỗ có pattern, trả về list                                                                                             |
 | escape    | escape(pattern)                                                                                            | Làm ký tự đặc biệt regex thành ký tự đặc biệt đúng nghĩa                                                                                   |
 | compile   | compile(pattern)                                                                                           | Biên dịch 1 pattern thành 1 regex object                                                                                                   |
-_Xem ví dụ thực hành tại file REGEX.md_
+
+_Xem ví dụ thực hành tại file regex.ipynb_
 
 ### 1.3. Match object
 | Syntax   | Mô tả                                                                                                |
@@ -50,7 +51,8 @@ _Xem ví dụ thực hành tại file REGEX.md_
 | start()  | Trả về vị trí bắt đầu của phần match                                                                 |
 | end()    | Trả về vị trí kết thúc của phần match                                                                |
 | span()   | Bao gồm cả vị trí bắt đầu và kết thúc của phần match                                                 |
-_Xem ví dụ thực hành tại file REGEX.md_
+
+_Xem ví dụ thực hành tại file regex.ipynb_
 
 ### 1.4. Flags
 | Syntax1       | Syntax2 | Mô tả                                                                                                                            |
@@ -58,4 +60,22 @@ _Xem ví dụ thực hành tại file REGEX.md_
 | re.IGNORECASE | re.I    | Bỏ phân biệt hoa thường                                                                                                          |
 | re.DOTALL     | re.S    | Match bất kỳ ký tự nào kể cả new line                                                                                            |
 | re.MULTILINE  |         | Nếu như ^ và $ chỉ match với mỗi dòng chứ không phải cả chuỗi thì khi dùng multiline sẽ check được cả chuỗi kể cả khi có newline |
+
+## 2. Searching and Matching Patterns  in Files
+- Search a file for a word
+- Find file names in a file
+- Search a file for a patterns
+- Search one and multiples files for product codes
+
+_Xem ví dụ thực hành tại file regex.ipynb_
+
+## 3. Validating User Input and Data
+- Check if a username meets the requirement
+- Checking numeric data
+- Validating email addresses
+- Validate inout and prevent code in injection
+
+_Xem ví dụ thực hành tại file regex.ipynb_
+
+## 4. Parsing Log Files
 
