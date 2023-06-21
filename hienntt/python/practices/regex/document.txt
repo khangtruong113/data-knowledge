@@ -1,0 +1,3 @@
+"recieve": "receive",
+"adress": "address",
+"acomodate": "accommodate"

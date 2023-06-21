@@ -71,11 +71,28 @@ _Xem ví dụ thực hành tại file regex.ipynb_
 
 ## 3. Validating User Input and Data
 - Check if a username meets the requirement
-- Checking numeric data
-- Validating email addresses
+- Check numeric data
+- Validate email addresses
 - Validate inout and prevent code in injection
 
 _Xem ví dụ thực hành tại file regex.ipynb_
 
 ## 4. Parsing Log Files
+- Get all the IP addresses from our log file
+- Find different types of log entries
+- Extract error codes from log files
+- Filter a live log stream for error codes
+- Split entries of a log file using the split function
 
+_Xem ví dụ thực hành tại file regex.ipynb_
+
+## 5. Replacing, Transforming, and Cleaning Data
+- Clean up and standardize user input 
+- Replace misspelled words 
+- Reformat date, prices, and numbers 
+- Remove punctuation and standardize text 
+- Format and clean data in CSV file 
+- Handle Unicode and special characters 
+- Replace sensitive information
+
+_Xem ví dụ thực hành tại file regex.ipynb_

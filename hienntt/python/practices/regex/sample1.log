@@ -1,0 +1,5 @@
+2022-04-08 10:34:22 [INFO] Request from 192.168.1.100: GET /index.html
+2022-04-08 10:34:24 [INFO] Request from 192.168.1.101: POST /api/data
+2022-04-08 10:34:27 [ERROR 404] Failed connection from 10.0.0.2
+2022-04-08 10:34:29 [ERROR 401] Request from 172.16.0.5: PUT /api/update
+2022-04-08 10:34:32 [WARNING] Suspicious activity from 203.0.113.25
