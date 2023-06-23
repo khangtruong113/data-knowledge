@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: dim_sales_stores
+    description: "Store information"
+    columns:
+      - name: store_id
+        description: "Store ID"
+        tests:
+          - unique
+          - not_null
