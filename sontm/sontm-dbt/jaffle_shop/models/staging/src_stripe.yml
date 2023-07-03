@@ -1,0 +1,8 @@
+version: 2
+
+sources:
+  - name: stripe
+    database: jaffle_shop
+    schema: main
+    tables:
+      - name: raw_payments
