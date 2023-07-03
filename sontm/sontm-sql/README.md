@@ -429,11 +429,163 @@ ENABLE/DISABLE trigger_name
 ```
 
 # 7. Indexing
+
+## 7.1. Định nghĩa
 `INDEX (hay chỉ mục)` là một cấu trúc dữ liệu để tăng hiệu suất truy vấn của cơ sở dữ liệu. Index cho phép cơ sở dữ liệu thực hiện một số câu truy vấn có điều kiện nhanh hơn so với thông thường. Nhưng index cũng được lưu trên bộ nhớ và tiêu tốn không gian bộ nhớ và thời gian để tạo, cập nhật index nên khi sử dụng index cần phải suy xét kĩ.
 
-`INDEX` giúp tăng tốc các truy vấn SELECT và các mệnh đề WHERE , nhưng nó làm chậm dữ liệu nhập vào, với các câu lệnh UPDATE và INSERT . Các chỉ mục có thể được tạo ra hoặc bỏ đi mà không ảnh hưởng đến dữ liệu.
+-> `INDEX` hiểu cơ bản như trang mục lục trong một cuốn sách. Nếu ta muốn tìm nội dung thay vì xem từng trang sách thì ta có thể trỏ đến mục lục có nội dung cần tìm
+
+`INDEX` giúp tăng tốc các truy vấn SELECT và các mệnh đề WHERE, nhưng nó làm chậm dữ liệu nhập vào, với các câu lệnh UPDATE và INSERT. Users không thể nhìn thấy `INDEX` do chỉ tồn tại trong cột và bảng và giúp tốc độ câu query nhanh hơn.
+
+-> Tạo `INDEX` thuờng ưu tiên cho các column có tần suất search nhiều
+
+## 7.2. Các loại Index
+Chia làm 2 loại chính:
+
+- ***Clustered Index***: là một loại chỉ mục sắp xếp các hàng dữ liệu trong bảng trên các giá trị chính của chúng. Trong cơ sở dữ liệu, **chỉ có một Clustered Index** trên mỗi bảng vì bản thân các dòng dữ liệu được lưu trữ và sắp xếp theo thứ tự vật lý dựa trên các cột trong loại Index này.
+
+```
+CREATE CLUSTERED INDEX index_name ON dbo.Tblname(Colname1, Colname2...)
+```
+
+- ***Non-Clustered Index***: Khác với clustered Index, non-Clustered Index không sắp xếp dữ liệu theo một trật tự vật lý như clustered Index. Mặc định thì primary key là clustered index còn foreign key là non-clustered index, do đó non-clustered index không mang tính duy nhất dữ liệu.
+
+```
+CREATE NONCLUSTERED INDEX index_name ON dbo.Tablename(ColumnName1, ColumnName2...)
+```
+
+Dựa vào phân loại chính trên ta có các loại Index:
+
+- ***Single-Column Index***: tạo cho duy nhất 1 cột trong bảng
+
+```
+CREATE INDEX ten_index
+ON ten_bang (ten_cot);
+```
+
+- ***Unique Index***: chỉ mục duy nhất, được sử dụng để tăng hiệu suất và đảm bảo tính toàn vẹn dữ liệu. Một chỉ mục duy nhất không cho phép chèn bất kỳ giá trị trùng lặp nào được chèn vào bảng.
+
+```
+CREATE UNIQUE INDEX ten_index
+ON ten_bang (ten_cot);
+```
+
+- ***Composite Index***: chỉ mục kết hợp dành cho hai hoặc nhiều cột trong một bảng
+
+```
+CREATE INDEX ten_index
+ON ten_bang (cot1, cot2);
+```
+- ***Implicit Index***: chỉ mục mà được tạo tự động bởi Database Server khi một bảng được tạo. Các Index ngầm định được tạo tự động cho các ràng buộc Primary key và các ràng buộc Unique.
+
+## 7.3. Một số chú ý:
+
+- Không nên sử dụng trong các bảng nhỏ, ít bản ghi.
+- Không nên sử dụng Index trong bảng mà các hoạt động UPDATE, INSERT xảy ra thường xuyên với tần suất lớn.
+- Tiêu chí chọn trường Index:
+  - Kích thước nhỏ: với clustered index tốt nhất là một trường kiểu số nguyên (INT hoặc BIGINT), lý tưởng nhất là tạo Clustered Index trên cột có thuộc tính Unique và khác Null.
+  - Trường luôn tăng: Khi giá trị mới của trường clustered index luôn tăng lên, bản ghi mới luôn được thêm vào cuối hạn chế tình trạng phân mảnh dữ liệu.
+  - Trường tĩnh: Clustered index không nên bị cập nhật thường xuyên, giá trị của nó nên được giữ nguyên. Khi nó bị cập nhật, cả clustered index và nonclustered index cần được cập nhật để sắp xếp vào vị trí mới cho đúng thứ tự dẫn đến tình trạng Index bị phân mảnh
+  - Tính duy nhất : Các giá trị trong một cột có tác động đến hiệu suất của Index, càng nhiều giá trị trùng lặp việc đọc từng bản ghi trở nên tốn kém hơn là quét bảng (table scan). Vì thế khi thấy độ selectivity thấp, bộ Optimizer sẽ tự động bỏ qua không dùng Index.
 
 # 8. Partitioning
+
+## 8.1. Định nghĩa
+`Table partitioning` là kỹ thuật phân chia bảng thành từng đoạn nhằm quản lý hiệu quả cơ sở dữ liệu với dung lượng lớn, cung cấp 1 phương pháp khác để chia dữ liệu những bảng lớn và trỏ tới những vùng nhỏ hơn. 
+
+Bằng phương pháp đó, nó tạo ra một phiên bản quản trị cơ sở dữ liệu dễ dàng hơn khi back up (sao lưu), loading (nạp dữ liệu), phục hồi (recovery) và truy vấn dữ liệu (query data)
+
+![Partitioning](https://images.viblo.asia/f5be0c42-9baf-4dfb-b24d-78fed3b73264.gif)
+
+Với những bảng dữ liệu chứa vài trăm triệu bản ghi thường xuyên được cập nhật, các tác vụ như backup/restore, hoặc create/rebuild index đều rất tốn kém thời gian:
+
+-> Mỗi lần truy vấn DB engine phải duyệt qua toàn bộ bảng để lấy data 
+
+-> Tạo ra vấn đề về performance khi bản ghi trong table quá lớn 
+
+-> Sử dụng Table Partitioning lấy data tại vùng nhất định thay vì toàn bộ table như trước đây.
+
+## 8.2. Vertical Partitioning and Horizontal Partitioning
+
+- ***Vertical Partitioning (Phân vùng dọc):***  Chia table theo các row - bản ghi. các bản ghi matching theo điều kiện partition function mà được assign vào các partition tương ứng khác nhau.
+
+- ***Horizontal Partitioning (Phân vùng dọc):***  Chia table theo các column.
+
+## 8.3. Syntax
+
+```
+CREATE [TEMPORARY] TABLE [IF NOT EXISTS] tbl_name
+(create_definition,...)
+[table_options]
+[partition_options]
+```
+
+## 8.4. Type of Table Partitioning
+
+### 8.4.1. Range Partition
+
+ `Range Partition` phân vùng theo khoảng mà bạn muốn sử dụng, tức là chia table ra thành nhiều khoảng giá trị, các khoảng giá trị này phải liên tiếp và không chồng chéo lên nhau. Ví dụ trong 1 năm bạn có 12 tháng, chúng ta có thể chia thành 12 khoảng liên tiếp nhau.
+
+ `Range partition` sử dụng **VALUE LESS THAN**. Các value phải được liền kề nhau và không được chồng chéo lên nhau và phải mang giá trị **integer** hoặc **NULL**
+
+```
+ CREATE TABLE members (
+    firstname VARCHAR(25) NOT NULL,
+    lastname VARCHAR(25) NOT NULL,
+    username VARCHAR(16) NOT NULL,
+    email VARCHAR(35),
+    joined DATE NOT NULL
+)
+PARTITION BY RANGE( YEAR(joined) ) (
+    PARTITION p0 VALUES LESS THAN (1990),
+    PARTITION p1 VALUES LESS THAN (2000),
+    PARTITION p2 VALUES LESS THAN (2010),
+    PARTITION p3 VALUES LESS THAN (2020),
+    PARTITION p4 VALUES LESS THAN MAXVALUE
+);
+```
+
+**Chú ý**: `Range Partition` còn có thể sử dụng cùng lúc nhiều column
+
+### 8.4.2. List Partition
+
+`List Partition` tương tự như `Range partition` nhưng value để phân vùng đã được defined sẵn với **VALUES IN**.
+
+Value các partition function không được có sự chồng chéo, trường hợp insert với store_id không thuộc bất kì value nào trong tập values thì sẽ báo lỗi.
+
+```
+CREATE TABLE employees (
+    id INT NOT NULL,
+    fname VARCHAR(30),
+    lname VARCHAR(30),
+    store_id INT
+)
+PARTITION BY LIST(store_id) (
+    PARTITION pNorth VALUES IN (3,5,6,9,17),
+    PARTITION pEast VALUES IN (1,2,10,11,19,20),
+    PARTITION pWest VALUES IN (4,12,13,14,18),
+    PARTITION pCentral VALUES IN (7,8,15,16)
+);
+```
+
+### 8.4.3. Các loại Table Partitioning khác
+
+- `Columns partitioning`: Phân vùng theo các columns trong bảng
+
+- `Hash partitioning`: Phân vùng một cách tự động dựa vào biếu thức hoặc giá trị **INTEGER** của cột đã đc chọn. Các bản ghi sẽ đc chia đều cho các **Partition** vs số lượng **Partition** đc quyết định bới keyword **Partition** nếu k định nghĩa số lượng **Partition**. thì sẽ default là 1
+
+- `Key partitioning`: Tương tự `Hash Partitioning` nhưng có thể sử dụng 0 hoặc n column để **partition**, các column không nhất thiết phải là **INTEGER**. Trường hợp không truyền column để partition thì ***primary key*** hoặc ***unique key*** sẽ auto được chọn.
+
+- `Subpartitioning` - hay còn được gọi là `Composite Partitioning` là kết hợp các loại partitioning khác nhau đã nói ở trên
+
+## 8.5. Một số lưu ý
+
+- `Table Partitioning` giúp ta tăng performance đáng kế với dữ liệu lớn do thay vì cần tìm kiếm dữ liệu ở toàn bộ table, thì mình chỉ cần tìm kiếm data ở một số partition nhất định dựa trên "quy tắc" đặt ra ban đầu hay còn gọi là **Partition Function**.
+- `Partition` nên là lựa chọn cuối cùng khi muốn tối ưu hóa, tức là sau khi đã optimize câu query, sử dụng Index.
+
+- `Partition` sẽ đem lại nhiều ý nghĩa nhất khi dữ liệu của bảng quá to hàng triệu bản ghi. Cụ thể, Table có dung lượng từ 2GB trở lên nên cân nhắc được `Partition`.
+
+- Khi áp dụng `Partition` lên bất kỳ bảng nào thì nên nhớ đến một số hạn chế như: không thể sử dụng khóa ngoại, cẩn thận với khóa chính hay unique.
 # 9. Connectors and APIs
 
 
