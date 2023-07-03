@@ -1,1 +1,1 @@
-{"virtualbox":{"/vagrant":{"guestpath":"/vagrant","hostpath":"D:/repos/dbt-tutorial/infra/sql_server","disabled":false,"__vagrantfile":true}}}
+{"virtualbox":{"/vagrant":{"guestpath":"/vagrant","hostpath":"D:/repos/data-knowledge/hienntt/dbt/infra/sql_server","disabled":false,"__vagrantfile":true}}}

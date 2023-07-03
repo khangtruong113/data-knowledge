@@ -213,7 +213,7 @@ Nếu ở ```dbt_project.yml``` set là view nhưng vào ```models``` set là ta
 
 Sử dụng 'ref' function trong câu lệnh ở model
 
-**Tạo file ```.yml``` để lam docs cho models**
+**Tạo file ```.yml``` để làm docs cho models**
 
 _Xem thêm ví dụ về phần Models này ở directory ```models```_
 
@@ -224,6 +224,16 @@ _Xem thêm ví dụ về phần Models này ở directory ```models```_
 - Visualize raw tables trong lineage
 
 ## 5. Tests
+
+Có 2 loại tests trong dbt:
+
+- Singular tests: logic riêng cho từng model
+- Generic tests: chung chung và mang tính đại diện hơn, chỉ cần thể hiện qua vài dòng YAML code 
+  - unique
+  - not_null
+  - accepted_values
+  - relationships
+
 
 ## 6. Documentation
 
