@@ -7,7 +7,7 @@ WITH paid_orders as (select Orders.ID as order_id,
         C.FIRST_NAME    as customer_first_name,
             C.LAST_NAME as customer_last_name
     FROM jaffle_shop.raw_orders as Orders
-    left join (select ORDER_ID as order_id, max(CREATED) as payment_finalized_date, sum(AMOUNT) / 100.0 as total_amount_paid
+    left join (select ORDER_ID as order_id, sum(AMOUNT) / 100.0 as total_amount_paid
 from jaffle_shop.raw_payments
 where STATUS <> 'fail'
 group by 1) p ON orders.ID = p.order_id
