@@ -3,7 +3,7 @@ DBT (Data Build Tool) là công cụ hỗ trợ việc transform, document, test
 
 Có 2 phiên bản: 
 - dbt Cloud (tính phí)
-- dbt CLI/dbt Core (sử dụng trong phần tìm hiểu dbt này)
+- dbt CLI (sử dụng trong phần tìm hiểu dbt này)
 
 [Cài đặt dbt Core](https://docs.getdbt.com/docs/core/installation): install packages: dbt-core, dbt-sqlserver
 
@@ -11,15 +11,19 @@ Có 2 phiên bản:
 
 [Một số câu lệnh cơ bản](https://docs.getdbt.com/reference/commands/build):
 
-| Commands                                                             | Description                                                                                                               |
-|:---------------------------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------|
-| ```dbt debug```                                                      | Check set up                                                                                                              |
-| ```dbt run```                                                        | Run all models                                                                                                            |
-| ```dbt run --select <model_name>``` OR ```dbt run -s <model_name>``` | Run only model selected (```dbt run -s dim_customers+``` sẽ chỉ áp dụng cho dim_customers và các models downstream của nó |
-| ```dbt docs generate```                                              | Create catalog                                                                                                            |
-| ```dbt docs serve```                                                 | Go to dbt docs web                                                                                                        |
-| ```dbt build```                                                      | Builds and tests your selected resources such as models, seeds, snapshots, and tests                                      |
-| ```dbt test```                                                       | Executes the tests you defined for your project                                                                           |
+| Commands                                                             | Description                                                                                                                                                                                              |
+|:---------------------------------------------------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| ```dbt debug```                                                      | Check set up                                                                                                                                                                                             |
+| ```dbt run```                                                        | Run all models                                                                                                                                                                                           |
+| ```dbt run --select <model_name>``` OR ```dbt run -s <model_name>``` | Run only model selected (```dbt run -s dim_customers+``` sẽ chỉ áp dụng cho dim_customers và các models downstream của nó                                                                                |
+| ```dbt test```                                                       | Executes the tests you defined for your project                                                                                                                                                          |
+| ```dbt test --select <model_name>```                                 | Test only model selected                                                                                                                                                                                 |
+| ```dbt build```                                                      | Builds and tests your selected resources such as models, seeds, snapshots, and tests                                                                                                                     |
+| ```dbt build --select <model_name>```                                | ```+<model_name>```: áp dụng cho model_name và các models upstream của nó (từ source đến model đó) <br> ```<model_name>+```: áp dụng cho model_name và các models downstream (từ model đó đến cuối flow) |
+| ```dbt docs generate```                                              | Create catalog                                                                                                                                                                                           |
+| ```dbt docs serve```                                                 | Go to dbt docs web                                                                                                                                                                                       |
+| ```dbt clean```                                                      | Delete all folders specified in the ```clean-targets``` list specified in ```dbt_project.yml```. You can use this to delete the ```dbt_packages``` and ```target``` directories                          |
+| ```dbt compile```                                                    | Generate executable SQL from source ```model```, ```test```, and ```analysis``` files. You can find these compiled SQL files in the ```target/``` directory of your dbt project                          |
 
 ## 1. DBT Project Structure
 Một project gồm các resources sau:
@@ -228,21 +232,280 @@ _Xem thêm ví dụ về phần Models này ở directory ```models```_
 Có 2 loại tests trong dbt:
 
 - Singular tests: logic riêng cho từng model
-- Generic tests: chung chung và mang tính đại diện hơn, chỉ cần thể hiện qua vài dòng YAML code 
+
+  &rarr; Tạo file ```.sql``` trong folder ```tests``` để viết rules
+
+
+- Generic tests: chung chung và mang tính đại diện hơn, chỉ cần thể hiện qua các dòng YAML code 
   - unique
   - not_null
   - accepted_values
   - relationships
 
+  &rarr; Tạo file ```.yml``` trong folder ```models``` để thêm điều kiện khi khai báo table/view
+
+_Note:_ Thay vì run và test từng model thì có thể sử dụng ```dbt build``` để test xong run lần lượt các model luôn.
 
 ## 6. Documentation
 
-## 7. Seeds, Snapshots, Exposures
+- Mục đích: để mọi người trong data team đều xem được data đến từ đâu, query như thế nào
+- DAG: auto generate để show flow của data từ source đến final models.
+- Có thể add text để mô tả
+- Tạo documentation:
+  - Thêm dòng ```description``` vào file ```.yml``` khi định nghĩa source, stg,... models
+  - Có thể tạo file ```.md``` rồi tạo bảng định nghĩa trong đó rồi thêm vào dòng ```description```: '{{ ("doc_block") }}'
 
-## 8. Jinja & Macros
+## 7. Analyses
+Khái niệm về ```models``` của dbt giúp các nhóm dữ liệu dễ dàng kiểm soát phiên bản và cộng tác trong quá trình chuyển đổi dữ liệu. Tuy nhiên, đôi khi, một câu lệnh sql nhất định không hoàn toàn phù hợp với khuôn mẫu của mô hình dbt. Các tệp sql "phân tích" này có thể được tạo phiên bản bên trong dự án dbt của bạn bằng chức năng ```analysis``` của dbt.
 
-## 9. Packages
+Bất kỳ tệp ```.sql``` nào được tìm thấy trong thư mục ```analyses/``` của dự án dbt sẽ được compile nhưng không được execute. Điều này có nghĩa là các nhà phân tích có thể sử dụng chức năng dbt như ```{{ ref(...) }}``` để chọn từ các models theo cách không phụ thuộc vào môi trường.
 
-## 10. Analyses
+Để compile sang một câu sql có thể chạy được, chạy ```dbt compile```. Sau đó tìm file SQL đã được compile trong ```target/compiled/{project name}/analyses/```. Có thể paste vào sql hoặc BI tool để chạy câu sql này, nhớ rằng ở trogn database nó là dạng ```analysis```, không phải ```model```.
 
-## 11. Metrics
+- sql files in the ```analyses``` folder with all models, tests, macros,... nhưng không phải models hay tests,...
+- support Jinja
+- can be compiled with ```dbt compile```
+- one off queries
+- training queries
+- auditing/refactoring
+
+## 8. Seeds
+Import data từ file ```.csv``` vào database, file ```.csv``` này được đặt trong ```seeds``` folder, ngoài ra trong folder này cũng có thể tạo file ```.yml``` để khai báo seeds (chạy ```dbt test --models <seed_name>```).
+
+Chạy ```dbt seed ``` để thực thi việc import csv vào database thành một bảng.
+
+Sử dụng ```{{ ref(...) }}``` trong các model để tính toán bình thường.
+
+- csv files in the data folder
+- build a table from a small amount of data in a csv file
+- build these tables with ```dbt seed```
+- seeds are not designed for large or frequently changing data
+
+## 9. Snapshots
+
+- help to "look back in time"
+- implement type-2 Slowly Changing Dimensions over mutable source tables: track việc thêm mới hoặc update, không track được khi xóa đi
+- có 2 kiểu strategy: ```timestamp``` và ```check``` (kiểu check này cần define cả ```check_cols```)
+
+```
+{% snapshot orders_snapshot_timestamp %}
+
+    {{
+        config(
+          target_schema='snapshots',
+          strategy='timestamp',
+          unique_key='id',
+          updated_at='updated_at',
+        )
+    }}
+
+    select * from {{ source('jaffle_shop', 'orders') }}
+
+{% endsnapshot %}
+```
+
+```
+{% snapshot orders_snapshot_check %}
+
+    {{
+        config(
+          target_schema='snapshots',
+          strategy='check',
+          unique_key='id',
+          check_cols=['status', 'is_cancelled'],
+        )
+    }}
+
+    select * from {{ source('jaffle_shop', 'orders') }}
+
+{% endsnapshot %}
+```
+
+- snapshot meta-fields:
+
+| Field          | Meaning                                                                            | Usage                                                                           |
+|:---------------|:-----------------------------------------------------------------------------------|:--------------------------------------------------------------------------------|
+| dbt_valid_from | The timestamp when this snapshot row was first inserted                            | This column can be used to order the different "versions" of a record.          |
+| dbt_valid_to   | The timestamp when this row became invalidated.                                    | The most recent snapshot record will have ```dbt_valid_to``` set to ```null```. |
+| dbt_scd_id     | A unique key generated for each snapshotted record.                                | This is used internally by dbt                                                  |
+| dbt_updated_at | The updated_at timestamp of the source record when this snapshot row was inserted. | This is used internally by dbt                                                  |
+
+
+## 10. Exposures
+
+- make it possible to define and describe a downstream use of your dbt project, such as in a dashboard, application, or data science pipeline
+- run, test, and list resources that feed into your exposure 
+- populate a dedicated page in the auto-generated documentation site with context relevant to data consumers
+
+``` 
+version: 2
+
+exposures:
+  
+  - name: weekly_jaffle_report
+    type: dashboard
+    maturity: high
+    url: https://bi.tool/dashboards/1
+    description: >
+      Did someone say "exponential growth"?
+
+    depends_on:
+      - ref('fct_orders')
+      - ref('dim_customers')
+      - source('gsheets', 'goals')
+
+    owner:
+      name: Callum McData
+      email: data@jaffleshop.com
+```
+
+## 11. Jinja
+- Python based templating language
+- Brings functional aspects to SQL
+- Enables better collaboration
+- Write SQL faster with less lines of code
+
+There are three Jinja delimiters to be aware of in Jinja:
+
+- ```{% … %}``` is used for statements. These perform any function programming such as setting a variable or starting a for loop.
+- ```{{ … }}``` is used for expressions. These will print text to the rendered file. In most cases in dbt, this will compile your Jinja to pure SQL.
+- ```{# … #}``` is used for comments. This allows us to document our code inline. This will not be rendered in the pure SQL that you create when you run dbt compile or dbt run.
+
+A few helpful features of Jinja include dictionaries, lists, if/else statements, for loops, and macros:
+
+- Dictionaries are data structures composed of key-value pairs.
+```
+{% set person = {
+    ‘name’: ‘me’,
+    ‘number’: 3
+} %}
+
+{{ person.name }}
+
+me
+
+{{ person[‘number’] }}
+
+3
+```
+
+- Lists are data structures that are ordered and indexed by integers.
+```
+{% set self = [‘me’, ‘myself’] %}
+
+{{ self[0] }}
+
+me
+```
+
+- If/else statements are control statements that make it possible to provide instructions for a computer to make decisions based on clear criteria.
+```
+{% set temperature = 80.0 %}
+
+On a day like this, I especially like
+
+{% if temperature > 70.0 %}
+
+a refreshing mango sorbet.
+
+{% else %}
+
+A decadent chocolate ice cream.
+
+{% endif %}
+
+On a day like this, I especially like
+
+a refreshing mango sorbet
+```
+
+- For loops make it possible to repeat a code block while passing different values for each iteration through the loop.
+```
+{% set flavors = [‘chocolate’, ‘vanilla’, ‘strawberry’] %}
+
+{% for flavor in flavors %}
+
+Today I want {{ flavor }} ice cream!
+
+{% endfor %}
+
+Today I want chocolate ice cream!
+
+Today I want vanilla ice cream!
+
+Today I want strawberry ice cream!
+```
+
+- Macros are a way of writing functions in Jinja. This allows us to write a set of statements once and then reference those statements throughout your code base.
+```
+{% macro hoyquiero(flavor, dessert = ‘ice cream’) %}
+
+Today I want {{ flavor }} {{ dessert }}!
+
+{% endmacro %}
+
+{{ hoyquiero(flavor = ‘chocolate’) }}
+
+Today I want chocolate ice cream!
+
+{{ hoyquiero(mango, sorbet) }}
+
+Today I want mango sorbet!
+```
+
+_**Note:** Whitespace Control:_ We can control for whitespace by adding a single dash on either side of the Jinja delimiter. This will trim the whitespace between the Jinja delimiter on that side of the expression.
+
+When used in a dbt model, your Jinja needs to compile to a valid query. To check what SQL your Jinja compiles to:
+
+- Using dbt Cloud: Click the compile button to see the compiled SQL in the Compiled SQL pane
+- Using the dbt CLI: Run dbt compile from the command line. Then open the compiled SQL file in the ```target/compiled/{project name}/``` directory. Use a split screen in your code editor to keep both files open at once.
+
+## 12. Macros
+- Một đoạn code có thể sử dụng lại nhiều lần
+- Có thể hiểu tương tự như functions ở các ngôn ngữ lập trình khác
+- Defined in `.sql` files and `macros` folder
+- Macro files can contain one or more macros
+
+Macro files can contain one or more macros — here's an example:
+``` 
+{% macro cents_to_dollars(column_name, scale=2) %}
+    ({{ column_name }} / 100)::numeric(16, {{ scale }})
+{% endmacro %}
+```
+
+A model which uses this macro might look like:
+```
+select
+  id as payment_id,
+  {{ cents_to_dollars('amount') }} as amount_usd,
+  ...
+from app_data.payments
+```
+
+This would be compiled to:
+```
+select
+  id as payment_id,
+  (amount / 100)::numeric(16, 2) as amount_usd,
+  ...
+from app_data.payments
+```
+
+## 13. Packages
+- import models and macros that have already been written
+- leverage modeling of common sources
+- leverage macros across your dbt project
+- find packages at hub.getdbt.com
+
+## 14. Metrics
+Là 1 package trong dbt, có thể dùng để tính toán các hàm cơ bản theo 1 bảng calendar được set up sẵn
+
+Xem [tại đây](https://docs.getdbt.com/docs/build/metrics)
+
+## 15. Hooks and Operations
+Hooks are Pre and Post database commands executed within the flow of data pipelines.
+
+Hooks can be defined in two ways:
+
+- Within the model, seed, snapshot (pre-hook, post-hook)
+- Within the dbt_project.yml (on-run-start, on-run-end)

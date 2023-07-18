@@ -1,0 +1,34 @@
+version: 2
+
+sources:
+  - name: sales
+    tables:
+      - name: stores
+        description: "Stores Information"
+        columns:
+          - name: store_id
+            description: "primary key of sales_stores table"
+            tests:
+              - unique
+              - not_null
+
+      - name: stores_new
+        description: "Stores Information"
+        columns:
+          - name: store_id
+            description: "primary key of sales_stores table"
+            tests:
+              - unique
+              - not_null
+
+      - name: orders
+        description: "Orders Information"
+        columns:
+          - name: order_id
+            description: "primary key of sales_orders table"
+            tests:
+              - unique
+              - not_null
+
+      - name: order_items
+        description: "Order Line Information"

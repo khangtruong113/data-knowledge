@@ -1,0 +1,10 @@
+version: 2
+
+seeds:
+  - name: staffs
+    description: " a manual map of staffs to stores"
+    columns:
+      - name: staff_id
+        tests:
+          - unique
+          - not_null
