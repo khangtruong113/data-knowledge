@@ -1,0 +1,17 @@
+version: 2
+
+exposures:
+
+  - name: orders_dashboard
+    type: dashboard
+    url: https://app.powerbi.com/groups/f57857a0-73d8-448b-b4ae-0f8ef67208a3/reports/97f4a8dc-2c41-4a17-85cb-62638020d2ea/ReportSection?experience=power-bi
+    description:
+      This is orders dashboard docs.
+
+    depends_on:
+      - ref('dim_sales_orders')
+      - source('sales', 'orders')
+
+    owner:
+      name: Nguyen Thi Thu Hien
+      email: hienntt@synodus.com

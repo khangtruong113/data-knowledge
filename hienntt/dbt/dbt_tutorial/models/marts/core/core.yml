@@ -1,0 +1,21 @@
+version: 2
+
+models:
+  - name: dim_sales_orders
+    description: "Orders information"
+    columns:
+      - name: order_id
+        description: "Order ID"
+        tests:
+          - unique
+          - not_null
+  - name: dim_sales_staffs
+    description: "Staffs and stores information"
+    columns:
+      - name: staff_id
+        description: "Staff ID"
+        tests:
+          - unique
+          - not_null
+  - name: all_days
+    description: "Calendar table"

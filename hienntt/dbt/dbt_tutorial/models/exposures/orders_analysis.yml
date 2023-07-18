@@ -1,0 +1,16 @@
+version: 2
+
+exposures:
+
+  - name: orders_analysis
+    type: analysis
+    description:
+      This is orders analysis docs.
+
+    depends_on:
+      - ref('dim_sales_orders')
+      - source('sales', 'orders')
+
+    owner:
+      name: Nguyen Thi Thu Hien
+      email: hienntt@synodus.com

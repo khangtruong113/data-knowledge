@@ -93,4 +93,8 @@ Hiển thị các tham số thiết lập Git:
 ## 3. Notes
 
 - Khi muốn untrack các file thì tạo file _.gitignore_ ở thư mục chính rồi add các tên file không cần theo dõi vào
-
+- Nếu file/folder được tạo ra trước _.gitignore_ rồi thì sau đó sẽ không tự được untrack, phải dùng các câu sau đây để untrack:
+```
+git rm -r --cached ..\..\..\.idea
+git commit -m 'untrack .idea folder'
+```
